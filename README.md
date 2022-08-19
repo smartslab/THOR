@@ -13,3 +13,12 @@ The UW Indoor Scenes (UW-IS) Occluded Dataset proposed in the above paper for sy
 * scikit-learn
 * Keras
 
+## Usage
+* ### Training:
+
+1. Use `generateSyntheticData.py` to obtain synthetic depth images for objects using Panda3D
+2. Generate point clouds from synthetic depth images using `getPCDsFromSyntheticData.py`, perform view normalization using `saveAllViewNormalizedPCDs.py`, and compute PIs for the TOPS descriptor using `computePIsFromViewNormalizedPCDs.py`
+3. Train an SVM (using `trainSVMLibrary.py`) or MLP (using `trainMLPLibrary.py`) library
+
+* ### Testing:
+1. Use `testUWISOccluded.py` to test on the UW-IS Occluded Dataset using the generated library
