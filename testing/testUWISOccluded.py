@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 
-@author: Ekta
+@author: Ekta Samani
 """
 
 import cv2
