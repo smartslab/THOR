@@ -1,0 +1,30 @@
+python3 testUWISOccludedMLP_Step1.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light>;
+
+
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 0 --model_set front;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 1 --model_set front;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 2 --model_set front;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 3 --model_set front;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 4 --model_set front;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 5 --model_set front;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 6 --model_set front;
+
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 0 --model_set side;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 1 --model_set side;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 2 --model_set side;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 3 --model_set side;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 4 --model_set side;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 5 --model_set side;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 6 --model_set side;
+
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 0 --model_set top;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 1 --model_set top;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 2 --model_set top;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 3 --model_set top;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 4 --model_set top;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 5 --model_set top;
+python3 testUWISOccludedMLP_Step2.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_MLP_models> --layer 6 --model_set top;
+
+python3 testUWISOccludedMLP_Step3.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light>;
+
+rm -r temp
