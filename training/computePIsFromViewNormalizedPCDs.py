@@ -4,17 +4,11 @@
 @author: Ekta Samani
 """
 
-
-import cv2
+import argparse
 import numpy as np
 import open3d as o3d
-import fnmatch,os
-import matplotlib.pyplot as plt
+import os
 import copy 
-from gtda.plotting import plot_point_cloud
-import pickle
-from scipy.spatial.transform import Rotation
-
 from persim import PersistenceImager
 
 
@@ -56,7 +50,6 @@ def computePDBinningNo2DTranslation(pcd):
     xes = copy.deepcopy(pcd[:,0])
     pcd[:,0] = bins[np.digitize(xes,bins,right=True)]
     xesnew = np.unique(pcd[:,0])
-    newpts = []
     dgm = []
     for idx,x in enumerate(xesnew):
         ymax = np.max(pcd[np.where(pcd[:,0] == x)][:,1])
@@ -129,60 +122,62 @@ def orientCamBottom(pcd):
         pcd.rotate(Rtemp)
     return pcd
             
-model_type = 'all'
 
-    
-if model_type == 'all':
+def main(data_path):
+    pidir = './training/libpis/'
+    os.mkdir(pidir)
     cam_a = [i for i in range(0,360,5)]
     cam_b = [i for i in range(0,185,5)]
     cam_a_remove = []
     cam_b_remove = [0,5,175,180]     
     cam_a_final = list(set(cam_a) - set(cam_a_remove))
     cam_b_final = list(set(cam_b) - set(cam_b_remove))
+
+    object_list = os.listdir(data_path)
+    for oname in object_list:
+        data = {} 
+        print(oname)
+        maxlayers = 0
+        instances = {}
+    
+        for bdeg in  cam_b_final:
+            folder = str(bdeg)+'/0'
+            for file in cam_a_final:
+                for aug in range(4):
+                    pcd = o3d.io.read_point_cloud(data_path+oname+'/'+folder+'/'+'vnpcdwcam/'+str(file)+'.pcd')
+                    
+                    trpcd = trXMinusCam(trYMinusCam(trZMinusCam(pcd)))
+                    rotatedpcd = orientCamBottom(trpcd)
+                    finaltrpcd = trXMinusCam(trYMinusCam(trZMinusCam(rotatedpcd)))
+    
+                    rotatedpcd = rotateForLayeringOption2WAug(finaltrpcd,aug)
+                    finalpcd = trXMinusCam(trYMinusCam(trZMinusCam(rotatedpcd)))
+    
+                    pcdpts = np.asarray(finalpcd.points)
+    
+    
             
-            
+                    rounded = roundinXYZ(pcdpts)
+    
+                    
+                    zs = getZs(rounded)
+                    pis = {}
+                    for key,value in zs.items():
+                        layer = getLayer(rounded,zs,key)
+                        dgm = computePDBinningNo2DTranslation(layer)
+    
+                        pers = dgm[:,1] - dgm[:,0]
+                        if (pers > 0.75).any():
+                            print('pers range issue')
+                        img = pimgr.transform([dgm[:,0:2]])
+                        pis[key] = img[0]
+                    maxlayers = max(maxlayers,key+1)
+                    instances['a'+str(aug)+'_'+str(bdeg)+'_'+str(file)] = pis
+        data[oname] = (instances,maxlayers)
+        np.save(pidir+'allpis_'+oname+'.npy',data)    
 
-object_list = os.listdir('./library/')
-for oname in object_list:
-    data = {} 
-    print(oname)
-    maxlayers = 0
-    instances = {}
-
-    for bdeg in  cam_b_final:
-        folder = str(bdeg)+'/0'
-        for file in cam_a_final:
-            for aug in range(4):
-                pcd = o3d.io.read_point_cloud('./library/'+oname+'/'+folder+'/'+'flatpcdwcam/'+str(file)+'.pcd')
-                
-                trpcd = trXMinusCam(trYMinusCam(trZMinusCam(pcd)))
-                rotatedpcd = orientCamBottom(trpcd)
-                finaltrpcd = trXMinusCam(trYMinusCam(trZMinusCam(rotatedpcd)))
-
-                rotatedpcd = rotateForLayeringOption2WAug(finaltrpcd,aug)
-                finalpcd = trXMinusCam(trYMinusCam(trZMinusCam(rotatedpcd)))
-
-                pcdpts = np.asarray(finalpcd.points)
-
-
-        
-                rounded = roundinXYZ(pcdpts)
-
-                
-                zs = getZs(rounded)
-                pis = {}
-                for key,value in zs.items():
-                    layer = getLayer(rounded,zs,key)
-                    dgm = computePDBinningNo2DTranslation(layer)
-
-                    pers = dgm[:,1] - dgm[:,0]
-                    if (pers > 0.75).any():
-                        print('pers range issue')
-                    img = pimgr.transform([dgm[:,0:2]])
-                    pis[key] = img[0]
-                maxlayers = max(maxlayers,key+1)
-                instances['a'+str(aug)+'_'+str(bdeg)+'_'+str(file)] = pis
-    data[oname] = (instances,maxlayers)
-    np.save('./libpis/train1_library_allpis_'+oname+'.npy',data)    
-
-
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_path')
+    args = parser.parse_args()
+    main(args.data_path)

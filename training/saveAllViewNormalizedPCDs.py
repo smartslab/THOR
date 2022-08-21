@@ -9,16 +9,13 @@
 import cv2
 import numpy as np
 import open3d as o3d
-import fnmatch,os
-import matplotlib.pyplot as plt
+import os,argparse
 import copy 
-from gtda.plotting import plot_point_cloud
-import pickle
-from scipy.spatial.transform import Rotation
 
-from persim import PersistenceImager
-
-
+def scaleObjectPCD(pcd,scaleFactor):
+    scaled = copy.deepcopy(pcd)
+    scaled.scale(scaleFactor,center=[0,0,0])
+    return scaled
 
 def trZMinusCam(pcd):
     pts = np.asarray(pcd.points)[:-2,:]
@@ -155,61 +152,61 @@ def my_scatter_plot_yz(points):
     
     return img   
 
-            
-model_type = 'all'
 
-    
-if model_type == 'all':
+def main(data_path):        
+
     cam_a = [i for i in range(0,360,5)]
     cam_b = [i for i in range(0,185,5)]
     cam_a_remove = []
     cam_b_remove = [0,5,175,180]     
     cam_a_final = list(set(cam_a) - set(cam_a_remove))
     cam_b_final = list(set(cam_b) - set(cam_b_remove))
-            
-            
-
-object_list = os.listdir('./library/')
-for oname in object_list:
-    data = {} 
-    print(oname)
-    maxlayers = 0
-    instances = {}
-
-    if oname == '035_power_drill':
-        if model_type == 'top' or model_type=='all':
-            bdeglist = list(set(cam_b_final) - set([10,15,20,170,165,160]))
-        else:
-            bdeglist = cam_b_final    
-    else:
-        bdeglist = cam_b_final
-        
-
-    for bdeg in bdeglist:
-        folder = str(bdeg)+'/0'
-        if not os.path.exists('/home/smartslab/Desktop/UWIS2/Panda3D/library/'+oname+'/'+folder+'/'+'flatpcdwcam/'):
-            os.makedirs('/home/smartslab/Desktop/UWIS2/Panda3D/library/'+oname+'/'+folder+'/'+'flatpcdwcam/')
-        for file in cam_a_final:
-
-            objpcd = o3d.io.read_point_cloud('./library/'+oname+'/'+folder+'/'+'scaledpcd/'+str(file)+'.pcd')
-            downpcd = objpcd.voxel_down_sample(voxel_size=0.01)
                 
-            #need cam to check campos in rotateforlayering...reducing the flipz augmentation
-            pts = np.asarray(downpcd.points)
-            cam1 = np.expand_dims(np.asarray([0,0,-0.1]),axis=0)
-            cam2 = np.expand_dims(np.asarray([0,0,0]),axis=0)
-            pts = np.concatenate((pts,cam1,cam2),axis=0)
+                
+    
+    object_list = os.listdir(data_path)
+    for oname in object_list:
+        print(oname)
 
-            downpcdCam = o3d.geometry.PointCloud()
-            downpcdCam.points = o3d.utility.Vector3dVector(pts)
-
-
-            R = o3d.geometry.get_rotation_matrix_from_xyz([0,0,-np.pi/2])
-            downpcdCam.rotate(R)
+        bdeglist = cam_b_final
             
-            rotatedpcd,_ = rotateToFlatForLayering(downpcdCam)
-            o3d.io.write_point_cloud('/home/smartslab/Desktop/UWIS2/Panda3D/library/'+oname+'/'+folder+'/'+'flatpcdwcam/'+str(file)+'.pcd',rotatedpcd)
+    
+        for bdeg in bdeglist:
+            folder = str(bdeg)+'/0'
+            if not os.path.exists(data_path+oname+'/'+folder+'/'+'vnpcdwcam/'):
+                os.makedirs(data_path+oname+'/'+folder+'/'+'vnpcdwcam/')
+            for file in cam_a_final:
+    
+                objpcd = o3d.io.read_point_cloud(data_path+oname+'/'+folder+'/pcd/'+str(file)+'.pcd') ##all the pcds in  the folder must be at a depth scale of 0.001m
+                
+                ##note that in some cases point clouds from depth images are distorted and not generated to the desired depth scale of 0.001m. In such cases appropriate a scale factor
+                ## is manually determined and used to ensure all pcds at a depth scale of 0.001 before performing the following scaling by a factor of 2.5
+                
+                scaled = scaleObjectPCD(objpcd,2.5) #choosen scale factor
+    
+                ## the 
+                downpcd = scaled.voxel_down_sample(voxel_size=0.01)
+                    
+                #need cam to check campos in rotateforlayering...reducing the flipz augmentation
+                pts = np.asarray(downpcd.points)
+                cam1 = np.expand_dims(np.asarray([0,0,-0.1]),axis=0)
+                cam2 = np.expand_dims(np.asarray([0,0,0]),axis=0)
+                pts = np.concatenate((pts,cam1,cam2),axis=0)
+    
+                downpcdCam = o3d.geometry.PointCloud()
+                downpcdCam.points = o3d.utility.Vector3dVector(pts)
+    
+    
+                R = o3d.geometry.get_rotation_matrix_from_xyz([0,0,-np.pi/2])
+                downpcdCam.rotate(R)
+                
+                rotatedpcd,_ = rotateToFlatForLayering(downpcdCam)
+                o3d.io.write_point_cloud(data_path+oname+'/'+folder+'/'+'vnpcdwcam/'+str(file)+'.pcd',rotatedpcd)
     
 
-#%%
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_path')
+    args = parser.parse_args()
+    main(args.data_path)
 
