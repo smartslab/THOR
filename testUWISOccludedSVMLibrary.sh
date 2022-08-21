@@ -1,0 +1,1 @@
+python3 testUWISOccludedSVM.py --videodir <path_to_dataset_folder_from_the_previous_step> --environment <environment_name> --category <category_name> --separation <separation> --light <light> --models_dir <path_to_saved_SVM_models>;
