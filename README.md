@@ -27,25 +27,25 @@ The UW Indoor Scenes (UW-IS) Occluded Dataset proposed in the above paper for sy
 
 	2. From within the THOR directory run the following to generate point clouds corresponding to all the generated depth images. 
 		```bash
-		python3 training/getPCDsFromSyntheticData.py --data_path <path_to_data_folder_from_step_one>
+		python3 training/getPCDsFromSyntheticData.py --data_path <path_to_data_folder_from_step_i>
 		```
 	3. From within the THOR directory run the following to perform view normalization on the generated point clouds. 
 		```bash
-		python3 training/saveAllViewNormalizedPCDs.py --data_path <path_to_data_folder_from_step_one>
+		python3 training/saveAllViewNormalizedPCDs.py --data_path <path_to_data_folder_from_step_i>
 		```
 	4. From within the THOR directory run the following to generate Persistence Images (PIs) for the TOPS descriptor of all the point clouds.
 		```bash
-		python3 training/computePIsFromViewNormalizedPCDs.py --data_path <path_to_data_folder_from_step_one>
+		python3 training/computePIsFromViewNormalizedPCDs.py --data_path <path_to_data_folder_from_step_i>
 		```
 		A subfolder named `libpis` containing all the PIs will be generated inside the  `training` folder .
 
-	5. Run the following to train an SVM library using the TOPS descriptors obtained from the computed PIs. (Add the path to the data folder from step 1 in `trainSVMLibrary.sh` as indicated).
+	5. Run the following to train an SVM library using the TOPS descriptors obtained from the computed PIs. (Add the path to the data folder from step i in `trainSVMLibrary.sh` as indicated).
 
 		```bash
 		cd training
 		sh trainSVMLibrary.sh
 		```
-		Alternatively, to train an MLP library run the following.  (Add the path to the data folder from step 1 in `trainMLPLibrary.sh` as indicated).
+		Alternatively, to train an MLP library run the following.  (Add the path to the data folder from step i in `trainMLPLibrary.sh` as indicated).
 		```bash
 		cd training
 		sh trainMLPLibrary.sh
